@@ -11,6 +11,14 @@ See the `example` folder for a demonstration.
 
 Built with the ES Module Loader polyfill 1.0 branch at https://github.com/ModuleLoader/es-module-loader.
 
+### How it works
+
+Fetches module sources in the browser, then uses Babel to transform them into System.register modules.
+
+The loader polyfill then handles the loading and execution pipeline as in the loader spec.
+
+**This project is only suitable for demonstrations / experimentation and is not designed for any production workflows at all.**
+
 ### Installation
 
 ```
