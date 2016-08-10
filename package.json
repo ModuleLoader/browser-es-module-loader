@@ -1,0 +1,22 @@
+{
+  "name": "browser-es-module-loader",
+  "version": "0.1.0",
+  "description": "Demonstrates ES module loading in the browser",
+  "main": "dist/browser-es-module-loader.js",
+  "dependencies": {
+    "babel-core": "^6.13.2",
+    "babel-plugin-transform-es2015-modules-systemjs": "^6.12.0"
+  },
+  "author": "Guy Bedford",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "es-module-loader": "github:moduleloader/es-module-loader#1.0",
+    "rollup": "^0.34.7",
+    "rollup-plugin-node-resolve": "^2.0.0"
+  },
+  "scripts": {
+    "build": "browserify src/babel-browser-build.js > dist/babel-browser-build.js && rollup -c",
+    "prepublish": "npm run build"
+  }
+}
