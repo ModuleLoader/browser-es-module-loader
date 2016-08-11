@@ -30,16 +30,8 @@ npm install browser-es-module-loader
 ```html
 <script src="dist/babel-browser-build.js"></script>
 <script src="dist/browser-es-module-loader.js"></script>
-<script>
-  var loader = new BrowserESModuleLoader();
 
-  // relative path or URL syntax is necessary as plain resolution throws
-  loader.import('./path/to/file.js').then(function(m) {
-    // ...
-  });
-</script>
-
-<!-- script type module loading -->
+<!-- script type=module loading -->
 <script type="module" src="path/to/module.js"></script>
 
 <!-- Anonymous script type module loading -->
@@ -48,6 +40,16 @@ import {x} from './y.js';
 
 // this case throws as plain / bare names are not supported as in the WhatWG spec
 import thisWillThrow from 'x';
+</script>
+
+<!-- dynamic loader instantiation also supported -->
+<script>
+  var loader = new BrowserESModuleLoader();
+
+  // relative path or URL syntax is necessary as plain resolution throws
+  loader.import('./path/to/file.js').then(function(m) {
+    // ...
+  });
 </script>
 ```
 

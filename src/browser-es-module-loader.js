@@ -1,12 +1,14 @@
 import RegisterLoader from 'es-module-loader/core/register-loader.js';
 import { PrivateInternalModuleNamespace as ModuleNamespace } from 'es-module-loader/core/loader-polyfill.js';
 
-import { baseURI, global } from 'es-module-loader/core/common.js';
+import { baseURI, global, isBrowser } from 'es-module-loader/core/common.js';
 import { resolveUrlToParentIfNotPlain } from 'es-module-loader/core/resolve.js';
 import { envFetch } from 'es-module-loader/core/fetch.js';
 
 if (!window.babel || !window.babelPluginTransformES2015ModulesSystemJS)
   throw new Error('babel-browser-build.js must be loaded first');
+
+var loader;
 
 // <script type="module"> support
 var anonSources = {};
@@ -49,8 +51,12 @@ function BrowserESModuleLoader(baseKey) {
   
   // ensure System.register is available
   global.System = global.System || {};
+  if (typeof global.System.register == 'function')
+    var prevRegister = global.System.register;
   global.System.register = function() {
     loader.register.apply(loader, arguments);
+    if (prevRegister)
+      prevRegister.apply(this, arguments);
   };
 }
 BrowserESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
@@ -97,5 +103,9 @@ BrowserESModuleLoader.prototype.instantiate = function(key, metadata) {
     loader.processRegisterQueue(key);      
   });
 };
+
+// create a default loader instance in the browser
+if (isBrowser)
+  loader = new BrowserESModuleLoader();
 
 export default BrowserESModuleLoader;
