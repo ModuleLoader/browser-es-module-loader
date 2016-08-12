@@ -3,7 +3,6 @@ import { InternalModuleNamespace as ModuleNamespace } from 'es-module-loader/cor
 
 import { baseURI, global, isBrowser } from 'es-module-loader/core/common.js';
 import { resolveUrlToParentIfNotPlain } from 'es-module-loader/core/resolve.js';
-import { envFetch } from 'es-module-loader/core/fetch.js';
 
 if (!window.babel || !window.babelPluginTransformES2015ModulesSystemJS)
   throw new Error('babel-browser-build.js must be loaded first');
@@ -69,6 +68,44 @@ BrowserESModuleLoader.prototype.normalize = function(key, parent, metadata) {
   return key;
 };
 
+function xhrFetch(url) {
+  console.log('fetching ' + url);
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    function load() {
+      resolve(xhr.responseText);
+    }
+    function error() {
+      reject(new Error('XHR error' + (xhr.status ? ' (' + xhr.status + (xhr.statusText ? ' ' + xhr.statusText  : '') + ')' : '') + ' loading ' + url));
+    }
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        // in Chrome on file:/// URLs, status is 0
+        if (xhr.status == 0) {
+          if (xhr.responseText) {
+            load();
+          }
+          else {
+            // when responseText is empty, wait for load or error event
+            // to inform if it is a 404 or empty file
+            xhr.addEventListener('error', error);
+            xhr.addEventListener('load', load);
+          }
+        }
+        else if (xhr.status === 200) {
+          load();
+        }
+        else {
+          error();
+        }
+      }
+    };
+    xhr.open("GET", url, true);
+    xhr.send(null);
+  });
+}
+
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
 BrowserESModuleLoader.prototype.instantiate = function(key, metadata) {
@@ -83,7 +120,7 @@ BrowserESModuleLoader.prototype.instantiate = function(key, metadata) {
     }
     // otherwise we fetch
     else {
-      envFetch(key, undefined, resolve, reject);
+      return xhrFetch(key);
     }
   })
   .then(function(source) {
@@ -99,8 +136,8 @@ BrowserESModuleLoader.prototype.instantiate = function(key, metadata) {
 
     // evaluate without require, exports and module variables
     // we leave module in for now to allow module.require access
-    eval('var require,exports;' + output.code + '\n//# sourceURL=' + key + '!transpiled');
-    loader.processRegisterContext(key);      
+    (0, eval)(output.code + '\n//# sourceURL=' + key + '!transpiled');
+    loader.processRegisterContext(key);
   });
 };
 
