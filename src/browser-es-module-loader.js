@@ -68,42 +68,39 @@ BrowserESModuleLoader.prototype.normalize = function(key, parent, metadata) {
   return key;
 };
 
-function xhrFetch(url) {
-  console.log('fetching ' + url);
-  return new Promise(function(resolve, reject) {
-    var xhr = new XMLHttpRequest();
-    function load() {
-      resolve(xhr.responseText);
-    }
-    function error() {
-      reject(new Error('XHR error' + (xhr.status ? ' (' + xhr.status + (xhr.statusText ? ' ' + xhr.statusText  : '') + ')' : '') + ' loading ' + url));
-    }
+function xhrFetch(url, resolve, reject) {
+  var xhr = new XMLHttpRequest();
+  function load(source) {
+    resolve(xhr.responseText);
+  }
+  function error() {
+    reject(new Error('XHR error' + (xhr.status ? ' (' + xhr.status + (xhr.statusText ? ' ' + xhr.statusText  : '') + ')' : '') + ' loading ' + url));
+  }
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        // in Chrome on file:/// URLs, status is 0
-        if (xhr.status == 0) {
-          if (xhr.responseText) {
-            load();
-          }
-          else {
-            // when responseText is empty, wait for load or error event
-            // to inform if it is a 404 or empty file
-            xhr.addEventListener('error', error);
-            xhr.addEventListener('load', load);
-          }
-        }
-        else if (xhr.status === 200) {
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      // in Chrome on file:/// URLs, status is 0
+      if (xhr.status == 0) {
+        if (xhr.responseText) {
           load();
         }
         else {
-          error();
+          // when responseText is empty, wait for load or error event
+          // to inform if it is a 404 or empty file
+          xhr.addEventListener('error', error);
+          xhr.addEventListener('load', load);
         }
       }
-    };
-    xhr.open("GET", url, true);
-    xhr.send(null);
-  });
+      else if (xhr.status === 200) {
+        load();
+      }
+      else {
+        error();
+      }
+    }
+  };
+  xhr.open("GET", url, true);
+  xhr.send(null);
 }
 
 // instantiate just needs to run System.register
@@ -120,7 +117,7 @@ BrowserESModuleLoader.prototype.instantiate = function(key, metadata) {
     }
     // otherwise we fetch
     else {
-      return xhrFetch(key);
+      xhrFetch(key, resolve, reject);
     }
   })
   .then(function(source) {
