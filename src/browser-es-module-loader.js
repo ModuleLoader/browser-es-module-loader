@@ -61,7 +61,7 @@ function BrowserESModuleLoader(baseKey) {
 BrowserESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 // normalize is never given a relative name like "./x", that part is already handled
-BrowserESModuleLoader.prototype.normalize = function(key, parent, metadata) {
+BrowserESModuleLoader.prototype[BrowserESModuleLoader.normalize] = function(key, parent, metadata) {
   var resolved = RegisterLoader.prototype.normalize.call(this, key, parent, metadata) || key;
   if (!resolved)
     throw new RangeError('ES module loader does not resolve plain module names, resolving "' + key + '" to ' + parent);
@@ -106,7 +106,7 @@ function xhrFetch(url, resolve, reject) {
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-BrowserESModuleLoader.prototype.instantiate = function(key, metadata) {
+BrowserESModuleLoader.prototype[BrowserESModuleLoader.instantiate] = function(key, metadata) {
   var loader = this;
 
   // load as ES with Babel converting into System.register
