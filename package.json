@@ -1,6 +1,6 @@
 {
   "name": "browser-es-module-loader",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Demonstrates ES module loading in the browser",
   "main": "dist/browser-es-module-loader.js",
   "dependencies": {
@@ -11,7 +11,7 @@
   "license": "MIT",
   "devDependencies": {
     "browserify": "^13.1.0",
-    "es-module-loader": "^0.1.0",
+    "es-module-loader": "^1.2.0",
     "rollup": "^0.34.7",
     "rollup-plugin-node-resolve": "^2.0.0"
   },
