@@ -43,11 +43,13 @@ if (typeof document != 'undefined' && document.getElementsByTagName) {
 }
 
 function BrowserESModuleLoader(baseKey) {
-  baseKey = baseKey ? resolveUrlToParentIfNotPlain(baseKey, baseURI) || baseKey : baseURI;
+  if (baseKey)
+    baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || resolveUrlToParentIfNotPlain('./' + baseKey, baseURI);
+  
   RegisterLoader.call(this, baseKey);
 
   var loader = this;
-  
+
   // ensure System.register is available
   global.System = global.System || {};
   if (typeof global.System.register == 'function')
