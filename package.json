@@ -1,6 +1,6 @@
 {
   "name": "browser-es-module-loader",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Demonstrates ES module loading in the browser",
   "main": "dist/browser-es-module-loader.js",
   "dependencies": {
