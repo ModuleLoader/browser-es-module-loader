@@ -45,7 +45,7 @@ if (typeof document != 'undefined' && document.getElementsByTagName) {
 function BrowserESModuleLoader(baseKey) {
   if (baseKey)
     baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || resolveUrlToParentIfNotPlain('./' + baseKey, baseURI);
-  
+
   RegisterLoader.call(this, baseKey);
 
   var loader = this;
@@ -108,6 +108,8 @@ function xhrFetch(url, resolve, reject) {
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
+var PROCESS_REGISTER_CONTEXT = RegisterLoader.processRegisterContext;
+
 BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata) {
   var loader = this;
 
@@ -137,7 +139,7 @@ BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, meta
     // evaluate without require, exports and module variables
     // we leave module in for now to allow module.require access
     (0, eval)(output.code + '\n//# sourceURL=' + key + '!transpiled');
-    loader.processRegisterContext(key);
+    loader[PROCESS_REGISTER_CONTEXT](key);
   });
 };
 
