@@ -63,8 +63,8 @@ function BrowserESModuleLoader(baseKey) {
 BrowserESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 // normalize is never given a relative name like "./x", that part is already handled
-BrowserESModuleLoader.prototype[RegisterLoader.normalize] = function(key, parent, metadata) {
-  var resolved = RegisterLoader.prototype.normalize.call(this, key, parent, metadata) || key;
+BrowserESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent, metadata) {
+  var resolved = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent, metadata) || key;
   if (!resolved)
     throw new RangeError('ES module loader does not resolve plain module names, resolving "' + key + '" to ' + parent);
 
