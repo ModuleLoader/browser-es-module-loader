@@ -108,9 +108,7 @@ function xhrFetch(url, resolve, reject) {
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-var PROCESS_REGISTER_CONTEXT = RegisterLoader.processRegisterContext;
-
-BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata) {
+BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata, processAnonRegister) {
   var loader = this;
 
   // load as ES with Babel converting into System.register
@@ -139,7 +137,7 @@ BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, meta
     // evaluate without require, exports and module variables
     // we leave module in for now to allow module.require access
     (0, eval)(output.code + '\n//# sourceURL=' + key + '!transpiled');
-    loader[PROCESS_REGISTER_CONTEXT](key);
+    processAnonRegister();
   });
 };
 
