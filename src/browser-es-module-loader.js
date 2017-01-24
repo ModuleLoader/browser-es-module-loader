@@ -4,7 +4,7 @@ import { InternalModuleNamespace as ModuleNamespace } from 'es-module-loader/cor
 import { baseURI, global, isBrowser } from 'es-module-loader/core/common.js';
 import { resolveIfNotPlain } from 'es-module-loader/core/resolve.js';
 
-if (!window.babel || !window.babelPluginTransformES2015ModulesSystemJS)
+if (!window.babel || !window.babelPluginTransformES2015ModulesSystemJS || !window.babelPluginSyntaxDynamicImport)
   throw new Error('babel-browser-build.js must be loaded first');
 
 var loader;
@@ -131,7 +131,7 @@ BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, proc
       sourceFileName: key,
       moduleIds: false,
       sourceMaps: 'inline',
-      plugins: [babelPluginTransformES2015ModulesSystemJS]
+      plugins: [babelPluginSyntaxDynamicImport, babelPluginTransformES2015ModulesSystemJS]
     });
 
     // evaluate without require, exports and module variables

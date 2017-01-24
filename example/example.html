@@ -5,7 +5,10 @@
   <script>
     var loader = new BrowserESModuleLoader();
     loader.import('./es-module.js').then(function(m) {
-      console.log(m.default());
+     return m.default();
+    })
+    .then(function (m) {
+      console.log(m);
     });
   </script>
 
