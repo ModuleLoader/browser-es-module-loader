@@ -40,6 +40,11 @@ import {x} from './y.js';
 
 // this case throws as plain / bare names are not supported as in the WhatWG spec
 import thisWillThrow from 'x';
+
+// dynamic import also supported
+import('./x').then(function (m) {
+  // ...
+});
 </script>
 
 <!-- dynamic loader instantiation also supported -->

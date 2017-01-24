@@ -1,6 +1,6 @@
 {
   "name": "browser-es-module-loader",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Demonstrates ES module loading in the browser",
   "main": "dist/browser-es-module-loader.js",
   "author": "Guy Bedford",
