@@ -2,7 +2,7 @@ import RegisterLoader from 'es-module-loader/core/register-loader.js';
 import { InternalModuleNamespace as ModuleNamespace } from 'es-module-loader/core/loader-polyfill.js';
 
 import { baseURI, global, isBrowser } from 'es-module-loader/core/common.js';
-import { resolveUrlToParentIfNotPlain } from 'es-module-loader/core/resolve.js';
+import { resolveIfNotPlain } from 'es-module-loader/core/resolve.js';
 
 if (!window.babel || !window.babelPluginTransformES2015ModulesSystemJS)
   throw new Error('babel-browser-build.js must be loaded first');
@@ -27,7 +27,7 @@ if (typeof document != 'undefined' && document.getElementsByTagName) {
         }
         // anonymous modules supported via a custom naming scheme and registry
         else {
-          var anonName = resolveUrlToParentIfNotPlain('./<anon' + ++anonCnt + '>', baseURI);
+          var anonName = resolveIfNotPlain('./<anon' + ++anonCnt + '>', baseURI);
           anonSources[anonName] = script.innerHTML;
           loader.import(anonName);
         }
@@ -44,9 +44,9 @@ if (typeof document != 'undefined' && document.getElementsByTagName) {
 
 function BrowserESModuleLoader(baseKey) {
   if (baseKey)
-    baseKey = resolveUrlToParentIfNotPlain(baseKey, baseURI) || resolveUrlToParentIfNotPlain('./' + baseKey, baseURI);
+    this.baseKey = resolveIfNotPlain(baseKey, baseURI) || resolveIfNotPlain('./' + baseKey, baseURI);
 
-  RegisterLoader.call(this, baseKey);
+  RegisterLoader.call(this);
 
   var loader = this;
 
@@ -63,8 +63,8 @@ function BrowserESModuleLoader(baseKey) {
 BrowserESModuleLoader.prototype = Object.create(RegisterLoader.prototype);
 
 // normalize is never given a relative name like "./x", that part is already handled
-BrowserESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent, metadata) {
-  var resolved = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent, metadata) || key;
+BrowserESModuleLoader.prototype[RegisterLoader.resolve] = function(key, parent) {
+  var resolved = RegisterLoader.prototype[RegisterLoader.resolve].call(this, key, parent || this.baseKey) || key;
   if (!resolved)
     throw new RangeError('ES module loader does not resolve plain module names, resolving "' + key + '" to ' + parent);
 
@@ -108,7 +108,7 @@ function xhrFetch(url, resolve, reject) {
 
 // instantiate just needs to run System.register
 // so we fetch the source, convert into the Babel System module format, then evaluate it
-BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, metadata, processAnonRegister) {
+BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, processAnonRegister) {
   var loader = this;
 
   // load as ES with Babel converting into System.register
