@@ -131,6 +131,7 @@ BrowserESModuleLoader.prototype[RegisterLoader.instantiate] = function(key, proc
       sourceFileName: key,
       moduleIds: false,
       sourceMaps: 'inline',
+      babelrc: false,
       plugins: [babelPluginSyntaxDynamicImport, babelPluginTransformES2015ModulesSystemJS]
     });
 
