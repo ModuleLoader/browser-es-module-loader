@@ -12,18 +12,13 @@
     });
   </script>
 
-  <script type="module" id="testmodule">
+  <script type="module">
     export default class Foo {
       bar(){
         console.log("baz");
       }
 
     }
-  </script>
-  <script type="module">
-    import Foo from './testmodule';
-    let foo = new Foo();
-    foo.bar();
   </script>
   <script type="module">
     import fn from './es-module.js';
