@@ -27,7 +27,12 @@ if (typeof document != 'undefined' && document.getElementsByTagName) {
         }
         // anonymous modules supported via a custom naming scheme and registry
         else {
-          var anonName = resolveIfNotPlain('./<anon' + ++anonCnt + '>', baseURI);
+          var uri = './<anon' + ++anonCnt + '>';
+          if (script.id !== ""){
+            uri = "./" + script.id;
+          }
+
+          var anonName = resolveIfNotPlain(uri, baseURI);
           anonSources[anonName] = script.innerHTML;
           loader.import(anonName);
         }
