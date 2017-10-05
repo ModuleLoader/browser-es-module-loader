@@ -15,7 +15,7 @@
     "rollup-plugin-node-resolve": "^2.0.0"
   },
   "scripts": {
-    "build": "browserify src/babel-browser-build.js > dist/babel-browser-build.js && rollup -c",
+    "build": "mkdir -p dist && browserify src/babel-browser-build.js > dist/babel-browser-build.js && rollup -c",
     "prepublish": "npm run build"
   }
 }
