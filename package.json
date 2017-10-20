@@ -4,6 +4,10 @@
   "description": "Demonstrates ES module loading in the browser",
   "main": "dist/browser-es-module-loader.js",
   "author": "Guy Bedford",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ModuleLoader/browser-es-module-loader"
+  },
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.22.1",
